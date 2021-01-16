@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+
+<div class="row">
+    <div class="col-sm-12 col-md-6">
+        <div class="row">
+        <h3>Twitter</h3></div>
+
+            {% for tweet in tweets %}
+        <div class="row">
+            <div class="card w-100 mx-2">
+                <div class="card-body">
+                    <a href="{{'https://twitter.com/twitter/statuses/' + tweet['id'] | string}}" target="_blank">
+                        <h5 class="card-title text-primary">
+                            {{tweet['user']['name']}}
+                        </h5>
+                    </a>
+
+                    <h6 class="card-subtitle mb-2 text-info d-flex flex-row justify-content-between">
+                        <div>
+                            @{{tweet['user']['screen_name'] | lower}}
+                        </div>
+                        <div>
+                            {% if tweet['user']['location'] %}
+                                <i class="fas fa-map-pin"></i> {{tweet['user']['location']}}
+                            {% endif %}
+                        </div>
+
+                    </h6>
+                    <p class="card-text">
+                        {{tweet['text']}}
+                    </p>
+                    <div class="card-text d-flex flex-row justify-content-start">
+                        <p class="card-text pr-2">
+                            <i class="fas fa-retweet"></i>: {{tweet['retweet_count']}}
+                        </p>
+                        <p class="card-text">
+                            <i class="fas fa-heart"></i>: {{tweet['favorite_count']}}
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        {% endfor %}
+    </div>
+    <div class="col-sm-12 col-md-6">
+        <div class="row">
+            <h3>Reddit</h3>
+        </div>
+        {% for post in reddit %}
+        <div class="row">
+            <div class="card w-100 mx-2">
+                <div class="card-body">
+                    <a href="{{post.url}}" class="text-primary" target="_blank">
+                        <h5 class="card-title d-flex flex-row justify-content-between">
+                                {{post.title}}
+                        </h5>
+                    </a>
+
+                    <p class="card-text">
+                        {% if post.score >= 0 %}
+                            <i class="fas fa-arrow-up"></i>
+                        {% else %}
+                            <i class="fas fa-arrow-down"></i>
+                        {% endif %}
+                        {{post.score}}
+                    </p>
+                    <h6 class="card-subtitle mb-2 text-info d-flex flex-row justify-content-between">
+                        <div>
+                            {{post.author}}
+                        </div>
+                        <div>
+                            {{post.created | datetime}}
+                        </div>
+
+                    </h6>
+                    <p class="card-text">
+                        {{post.selftext | markdown}}
+                    </p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

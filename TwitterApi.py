@@ -1,4 +1,5 @@
 import tweepy
+from geopy.geocoders import Nominatim
 import time
 from dotenv import load_dotenv
 import os
@@ -18,11 +19,16 @@ def limit_handler(cursor):
         time.sleep(1000)
 
 
+def get_geocode(search, radius=50):
+    geolocator = Nominatim(user_agent="starlink-updates")
+    location = geolocator.geocode(search)
+    return f'{location.latitude},{location.longitude},{radius}km'
+
+
 class TwitterClient:
     def __init__(self):
         consumer_key = os.getenv("KEY")
         consumer_secret = os.getenv("SECRET")
-        BEARER = os.getenv("BEARER")
         ACCESS_TOKEN = os.getenv("ACCESS_TOKEN")
         ACCESS_TOKEN_SECRET = os.getenv("ACCESS_TOKEN_SECRET")
 
@@ -31,9 +37,13 @@ class TwitterClient:
 
         self.api = tweepy.API(auth)
 
-    def search_tweets(self):
+    def search_tweets(self, location_search=None, radius=None):
+        if location_search:
+            geocode = get_geocode(location_search, radius)
+        else:
+            geocode=None
         tweets = []
-        for tweet in limit_handler(tweepy.Cursor(self.api.search, 'Starlink', lang='en', truncated=False).items(30)):
+        for tweet in limit_handler(tweepy.Cursor(self.api.search, 'Starlink', geocode=geocode, lang='en', truncated=False).items(30)):
             try:
                 # pprint(tweet)
                 if tweet.retweet_count > 0:
@@ -49,3 +59,8 @@ class TwitterClient:
         # tweets = self.api.search('Starlink', count=2, truncated=False)
 
         return tweets
+
+if __name__ == "__main__":
+    twitter = TwitterClient()
+    tweets = twitter.search_tweets('United Kingdom')
+    print(len(tweets))

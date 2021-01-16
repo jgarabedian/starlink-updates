@@ -6,8 +6,6 @@ load_dotenv()
 
 secret = os.getenv("REDDIT_SECRET")
 client = os.getenv("REDDIT_CLIENT")
-user = os.getenv("REDDIT_USERNAME")
-pwd = os.getenv("REDDIT_PWD")
 
 class RedditClient:
     def __init__(self):

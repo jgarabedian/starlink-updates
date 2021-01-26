@@ -7,6 +7,7 @@ load_dotenv()
 secret = os.getenv("REDDIT_SECRET")
 client = os.getenv("REDDIT_CLIENT")
 
+
 class RedditClient:
     def __init__(self):
         self.api = Reddit(
@@ -18,14 +19,14 @@ class RedditClient:
         # url = self.api.auth.url(["identity", "read"], "ilkjli", "permanent")
 
     def get_hot_posts(self):
-        posts = self.api.subreddit('Starlink').hot(limit=20)
+        posts = self.api.subreddit('Starlink').new(limit=20)
         return posts
 
 
-if __name__ == "__main__":
-    reddit = RedditClient()
-    posts = reddit.get_hot_posts()
-    for post in posts:
-        import pprint
-        # pprint.pprint(vars(post))
-        print(post.url)
+# if __name__ == "__main__":
+#     reddit = RedditClient()
+#     posts = reddit.get_hot_posts()
+#     for post in posts:
+#         import pprint
+#         # pprint.pprint(vars(post))
+#         print(post.url)

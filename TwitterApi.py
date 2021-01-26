@@ -43,13 +43,15 @@ class TwitterClient:
         else:
             geocode=None
         tweets = []
+        tweet_text = []
         for tweet in limit_handler(tweepy.Cursor(self.api.search, 'Starlink', geocode=geocode, lang='en', truncated=False).items(30)):
             try:
                 # pprint(tweet)
                 if tweet.retweet_count > 0:
-                    if tweet not in tweets:
+                    if tweet.text not in tweet_text:
                         tweets.append(tweet)
                 else:
+                    tweet_text.append(tweet.text)
                     tweets.append(tweet)
             except StopIteration:
                 return tweets
